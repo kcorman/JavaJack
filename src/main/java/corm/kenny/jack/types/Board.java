@@ -1,7 +1,9 @@
 package corm.kenny.jack.types;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import corm.kenny.jack.dao.InvalidMoveException;
 
@@ -21,6 +23,22 @@ public class Board {
 	private List<String> playerIds = new ArrayList<>();
 	private List<List<Cell>> gameCells;
 
+	private Board() {
+		
+	}
+	
+	public Board(int size) {
+		this.boardSize = size;
+    	List<List<Cell>> cells = new ArrayList<>();
+    	for(int i = 0;i<size;i++) {
+    		List<Cell> row = new ArrayList<>();
+    		for(int k = 0;k<size;k++) {
+    			row.add(new Cell());
+    		}
+    		cells.add(row);
+    	}
+    	this.gameCells = cells;
+	}
 	
 	public void takeTurn(int row, int col, String playerId) {
 		if(!currentTurn.equals(playerId)) {
@@ -41,8 +59,43 @@ public class Board {
 	/**
 	 * Checks to see if the game is now in a 'win' state, and populates the winner field if it is.
 	 */
-	private void checkForWin() {
-		
+	public void checkForWin() {
+		class Tally {
+			int[] counts = new int[4]; //top-right, top, top-left, left
+		}
+		for(String player : getPlayerIds()) {
+			Map<Cell, Tally> tallies = new HashMap<>();
+			for(int i = 0;i<boardSize;i++) {
+				for(int k = 0;k<boardSize;k++) {
+					Cell cell = gameCells.get(i).get(k);
+					Tally t = new Tally();
+					tallies.put(cell, t);
+					int spaceVal = player.equals(cell.getOwner()) ? 1 : 0;
+					if(spaceVal == 1) {
+						t.counts[0] = spaceVal + 
+								(i == 0 || k == boardSize-1 ? 
+										0 : tallies.get(gameCells.get(i-1).get(k+1)).counts[0]);
+						t.counts[1] = spaceVal + 
+								(i == 0 ? 
+										0 : tallies.get(gameCells.get(i-1).get(k)).counts[1]);
+						t.counts[2] = spaceVal + 
+								(i == 0 || k == 0 ? 
+										0 : tallies.get(gameCells.get(i-1).get(k-1)).counts[2]);
+						t.counts[3] = spaceVal + 
+								(k == 0 ? 
+										0 : tallies.get(gameCells.get(i).get(k-1)).counts[3]);
+					} // else leave counts as 0
+
+					for(int check = 0;check<4;check++) {
+						if(t.counts[check] >= 5) {
+							winner = player;
+							System.out.println("Found winner: " + player);
+							
+						}
+					}
+				}
+			}
+		}
 	}
 
 	

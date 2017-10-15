@@ -53,19 +53,10 @@ public class GameController {
     	if(createBoard.getPlayers().stream().distinct().count() != 2) {
     		throw new InvalidBoardException();
     	}
-    	Board b = new Board();
-    	b.setBoardSize(createBoard.getBoardSize());
+    	Board b = new Board(createBoard.getBoardSize());
     	b.setPlayerIds(createBoard.getPlayers());
     	b.setCurrentTurn(createBoard.getPlayers().get(0));
-    	List<List<Cell>> cells = new ArrayList<>();
-    	for(int i = 0;i<b.getBoardSize();i++) {
-    		List<Cell> row = new ArrayList<>();
-    		for(int k = 0;k<b.getBoardSize();k++) {
-    			row.add(new Cell());
-    		}
-    		cells.add(row);
-    	}
-    	b.setGameCells(cells);
+
     	b.setId(UUID.randomUUID().toString());
     	gameDao.saveBoard(b);
     	return b;
