@@ -1,0 +1,24 @@
+<html>
+<head>
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></style>
+    
+</head>
+<div id="app">
+    <table border="1">
+        <col v-for="todo in todos" width="20">
+        <tr v-for="todo in todos">
+            <td v-for="val in todo.vals">{{val}}</td>
+        </tr>
+    </table>
+</div>
+<script>
+    onReady();
+</script>
+</html>
